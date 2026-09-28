@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#244c40" />
+    <meta
+      name="description"
+      content="StudySprint 学业规划原型：把作业要求变成有来源、可编辑的行动清单。"
+    />
+    <title>StudySprint · 把作业变成下一步</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <aside class="sidebar">
+      <a class="brand" href="./" aria-label="StudySprint 首页"
+        ><span class="brand-mark">s<span>↗</span></span
+        ><span
+          >StudySprint<small>A LITTLE STRUCTURE. A LOT OF CALM.</small></span
+        ></a
+      >
+      <div class="workspace-label">你的学习工作台 <span>PROTOTYPE</span></div>
+      <nav aria-label="主要导航">
+        <button class="nav-button active" data-view="board">
+          <span aria-hidden="true">▦</span> 作业总览
+          <span id="nav-count" class="nav-count"></span>
+        </button>
+        <button class="nav-button" data-view="week">
+          <span aria-hidden="true">▤</span> 本周安排
+        </button>
+        <button class="nav-button" data-view="about">
+          <span aria-hidden="true">◈</span> 关于这个产品
+        </button>
+      </nav>
+      <div class="sidebar-note">
+        <span class="sprout" aria-hidden="true">↗</span>
+        <p>不必一下做完。<br />先走清楚下一步。</p>
+        <small>从一份作业要求开始，<br />留出真正学习的时间。</small>
+      </div>
+      <div class="sidebar-bottom">
+        <span class="local-dot"></span> 数据仅保存在此浏览器<br /><button
+          class="text-button"
+          id="export-backup"
+        >
+          备份数据</button
+        ><span> · </span
+        ><button class="text-button" id="restore-backup">恢复备份</button
+        ><input
+          id="backup-file"
+          type="file"
+          accept="application/json,.json"
+          hidden
+        /><a href="https://tarfersoul.github.io/" class="back-home"
+          >← Yuejin Xie 的主页</a
+        >
+      </div>
+    </aside>
+    <div class="shell">
+      <header class="topbar">
+        <div>
+          <span class="breadcrumb">WORKSPACE</span><span class="slash">/</span
+          ><span id="view-label">作业总览</span>
+        </div>
+        <div class="topbar-right">
+          <span id="today-label"></span
+          ><span class="avatar" aria-label="个人工作台">S</span>
+        </div>
+      </header>
+      <main id="main" tabindex="-1"></main>
+      <footer class="app-footer">
+        <span>StudySprint <span class="version">v0.1</span> · 从要求到行动</span
+        ><a
+          href="https://github.com/TarferSoul/studysprint"
+          target="_blank"
+          rel="noopener noreferrer"
+          >查看 GitHub 源码 ↗</a
+        >
+      </footer>
+    </div>
+    <dialog id="import-dialog" aria-labelledby="import-title">
+      <form id="import-form">
+        <div class="dialog-heading">
+          <div>
+            <span class="eyebrow">MAKE ROOM FOR WHAT MATTERS</span>
+            <h2 id="import-title">把作业交代清楚。</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button"
+            data-close="import-dialog"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <p class="muted">
+          粘贴作业通知，生成可编辑的行动清单。解析在本地完成。
+        </p>
+        <label for="brief">作业要求 <span class="required">*</span></label
+        ><textarea
+          id="brief"
+          name="brief"
+          rows="7"
+          minlength="10"
+          maxlength="12000"
+          required
+          placeholder="例如：产品设计作业。9月28日 22:00 截止。分析 3 个产品；制作交互原型；部署到 GitHub Pages；提交说明文档。"
+        ></textarea>
+        <div class="sample-row">
+          <button type="button" class="text-button" id="fill-sample">
+            试试示例作业 ↗</button
+          ><span>支持中文 / English</span>
+        </div>
+        <label for="source-url"
+          >原始通知链接 <span class="optional">可选</span></label
+        ><input
+          id="source-url"
+          type="url"
+          maxlength="2000"
+          placeholder="https://learn.example.edu/assignment"
+        />
+        <div class="form-grid">
+          <div>
+            <label for="course-input">课程</label
+            ><input
+              id="course-input"
+              maxlength="60"
+              placeholder="例如：产品设计"
+            />
+          </div>
+          <div>
+            <label for="due-input"
+              >截止时间 <span class="optional">可选，可稍后填写</span></label
+            ><input id="due-input" type="datetime-local" />
+          </div>
+        </div>
+        <p class="field-hint">
+          所有时间使用当前设备时区。日期和用时均需在下一步核对。
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="button quiet" data-close="import-dialog">
+            取消</button
+          ><button class="button primary" type="submit">
+            拆解并核对 <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="review-dialog" aria-labelledby="review-title">
+      <form id="review-form">
+        <div class="dialog-heading">
+          <div>
+            <span class="eyebrow">YOU HAVE THE FINAL SAY</span>
+            <h2 id="review-title">核对你的行动清单</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button"
+            data-close="review-dialog"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div id="review-content"></div>
+        <div class="dialog-actions">
+          <button class="button quiet" type="button" id="back-to-brief">
+            返回修改</button
+          ><button class="button primary" type="submit">加入工作台 →</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog
+      id="detail-dialog"
+      class="detail-dialog"
+      aria-labelledby="detail-title"
+    >
+      <div id="detail-content"></div>
+    </dialog>
+    <dialog id="confirm-dialog" aria-labelledby="confirm-title">
+      <form method="dialog">
+        <h2 id="confirm-title">确认操作</h2>
+        <p id="confirm-text"></p>
+        <div class="dialog-actions">
+          <button class="button quiet" value="cancel">取消</button
+          ><button class="button danger" value="confirm">确认</button>
+        </div>
+      </form>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <noscript
+      ><p class="no-script">
+        StudySprint 需要启用 JavaScript 才能在本地管理作业。
+      </p></noscript
+    >
+  </body>
+</html>
